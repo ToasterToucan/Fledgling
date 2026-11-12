@@ -36,13 +36,13 @@ class FLEDGLING_API UInventorySubsystem : public UGameInstanceSubsystem
 
 
 	// +++++++++++++++++++++++ GET INV INFO AS INV ITEM +++++++++++++++++++++++
-	/** Returns, in order, equipped Ambers, then Companions, then Weapons. */
+	/** Returns the arrays of equipped items, as references. */
 	UFUNCTION(BlueprintCallable, Category = "Get Info as Inv Item")
-	void GetAllEquipped(TArray<FInvItem>& Ambers, TArray<FInvItem>& Companions, TArray<FInvItem>& Weapons);
+	void GetAllEquipped(TArray<FInvItem>& Ambers, TArray<FInvItem>& Companions, TArray<FInvItem>& Weapon);
 
-	/** Returns, in order, unlocked (excluding equipped) Ambers, then Companions, then Weapons. */
+	/** Returns the arrays of unlocked (excluding equipped) items, as references. */
 	UFUNCTION(BlueprintCallable, Category = "Get Info as Inv Item")
-	void GetAllUnlocked(TArray<FInvItem>& Ambers, TArray<FInvItem>& Companions, TArray<FInvItem>& Weapons);
+	void GetAllUnlocked(TArray<FInvItem>& Ambers, TArray<FInvItem>& Companions, TArray<FInvItem>& Weapon);
 
 	// +++++++++++++++++++++++ GET INV INFO AS CARDS +++++++++++++++++++++++
 	/** Returns an array of all of the cards the given amber will give to the player. Does NOT care whether the amber is currently equipped or not. */
