@@ -153,8 +153,8 @@ TArray<FCard> UInventorySubsystem::GetFullLoadout() {
 
 void UInventorySubsystem::UnlockItem(const FInvItem item) {
 	// pass
-	ACharacter* temp = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	BP_Player
+	// ACharacter* temp = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	// temp->add
 }
 
 bool UInventorySubsystem::EquipItem_Item(FInvItem item, bool force_equip, int equip_slot) {
