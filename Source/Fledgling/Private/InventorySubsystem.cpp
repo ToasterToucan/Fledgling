@@ -1,5 +1,5 @@
 #include "InventorySubsystem.h"
-#include <cmath>
+#include "Kismet/GameplayStatics.h"
 
 // +++++++++++++++++++++++ VARIABLES +++++++++++++++++++++++
 // The card choices the player has made for each amber.
@@ -109,7 +109,7 @@ TArray<FCard> UInventorySubsystem::GetCardArrayOfAmber(FInvItem amber) {
 	return result;
 }
 
-TArray<FCard> UInventorySubsystem::GetArrayOfWeapon(FInvItem weapon) {
+TArray<FCard> UInventorySubsystem::GetCardArrayOfWeapon(FInvItem weapon) {
 	// Fail out if this is the empty weapon or not an weapon.
 	if (weapon.name == "Empty" || weapon.type != E_itemType::WEAPON) { return {}; }
 
@@ -134,13 +134,27 @@ TArray<FCard> UInventorySubsystem::GetArrayOfWeapon(FInvItem weapon) {
 }
 
 TArray<FCard> UInventorySubsystem::GetFullLoadout() {
-	
+	TArray<FCard> result;
+
+	// For each equipped weapon, get its card array and append that to result.
+	for (FInvItem weapon : equipped_weapon) {
+		result.Append(GetCardArrayOfWeapon(weapon));
+	}
+
+	// For each equipped amber, get its card array and append that to result.
+	for (FInvItem amber : equipped_ambers) {
+		result.Append(GetCardArrayOfAmber(amber));
+	}
+
+	return result;
 }
 
 // +++++++++++++++++++++++ ITEM MANIP +++++++++++++++++++++++
 
 void UInventorySubsystem::UnlockItem(const FInvItem item) {
 	// pass
+	ACharacter* temp = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	BP_Player
 }
 
 bool UInventorySubsystem::EquipItem_Item(FInvItem item, bool force_equip, int equip_slot) {

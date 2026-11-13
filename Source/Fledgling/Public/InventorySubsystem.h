@@ -51,7 +51,7 @@ class FLEDGLING_API UInventorySubsystem : public UGameInstanceSubsystem
 
 	/** Returns an array of all of the cards the given weapon will give to the player. Does NOT care whether the weapon is currently equipped or not. */
 	UFUNCTION(BlueprintCallable, Category = "Get Info as Cards")
-	TArray<FCard> GetArrayOfWeapon(FInvItem weapon);
+	TArray<FCard> GetCardArrayOfWeapon(FInvItem weapon);
 
 	/** Returns an array of all of the cards the currently equipped items will give to the player. */
 	UFUNCTION(BlueprintCallable, Category = "Get Info as Cards")
