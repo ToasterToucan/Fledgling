@@ -31,6 +31,8 @@ struct FAmberCardSelection {
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	uint8 value;
+
+	FAmberCardSelection(FName _row_name = "Empty", uint8 _value = 0) { row_name = _row_name; value = _value; }
 };
 
 // INVENTORY ITEM

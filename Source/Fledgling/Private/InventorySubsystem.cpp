@@ -1,4 +1,5 @@
 #include "InventorySubsystem.h"
+#include "PlayerParent.h"
 #include "Kismet/GameplayStatics.h"
 
 // +++++++++++++++++++++++ VARIABLES +++++++++++++++++++++++
@@ -152,9 +153,18 @@ TArray<FCard> UInventorySubsystem::GetFullLoadout() {
 // +++++++++++++++++++++++ ITEM MANIP +++++++++++++++++++++++
 
 void UInventorySubsystem::UnlockItem(const FInvItem item) {
-	// pass
-	// ACharacter* temp = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	// temp->add
+	// Get the player and this item's data, and add the item's unlock tag to the player.
+	APlayerParent* player = Cast<APlayerParent>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	FGenericItem* data = GetItemData(item);
+	player->player_tags_cpp.AddTag(data->unlock_tag);
+
+	// Add this item to the correct unlocks array.
+	GetArray(item.type, false)->Add(item);
+
+	// If this is an amber, add a new entry with its name to amber_card_choices.
+	if (item.type == E_itemType::AMBER) {
+		amber_card_choices.Add(FAmberCardSelection(item.name));
+	}
 }
 
 bool UInventorySubsystem::EquipItem_Item(FInvItem item, bool force_equip, int equip_slot) {
@@ -192,4 +202,60 @@ int UInventorySubsystem::FindFirstEmptySpace(TArray<FInvItem> array) {
 		return -1;
 	}
 	return -1;
+}
+
+FGenericItem* UInventorySubsystem::GetItemData(FInvItem item) {
+	return GetDTOfItemType(item.type)->FindRow<FGenericItem>(item.name, "guh");
+}
+
+TObjectPtr<UDataTable> UInventorySubsystem::GetDTOfItemType(E_itemType type) {
+	switch (type) {
+		case E_itemType::AMBER:
+			return DT_ambers;
+			break;
+
+		case E_itemType::COMPANION:
+			return DT_companions;
+			break;
+
+		case E_itemType::WEAPON:
+			return DT_weapons;
+			break;
+	}
+
+	// SHOULD NEVER HAPPEN!
+	return nullptr;
+}
+
+TArray<FInvItem>* UInventorySubsystem::GetArray(E_itemType type, bool equips) {
+	if (equips) {
+		switch (type) {
+			case E_itemType::AMBER:
+				return &equipped_ambers;
+				break;
+
+			case E_itemType::COMPANION:
+				return &equipped_companions;
+				break;
+
+			case E_itemType::WEAPON:
+				return &equipped_weapon;
+		}
+	} else {
+		switch (type) {
+			case E_itemType::AMBER:
+				return &unlocked_ambers;
+				break;
+
+			case E_itemType::COMPANION:
+				return &unlocked_companions;
+				break;
+
+			case E_itemType::WEAPON:
+				return &unlocked_weapons;
+		}
+	}
+
+	// SHOULD NEVER HAPPEN!.
+	return nullptr;
 }

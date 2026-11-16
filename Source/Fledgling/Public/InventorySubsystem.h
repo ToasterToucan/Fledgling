@@ -90,4 +90,13 @@ class FLEDGLING_API UInventorySubsystem : public UGameInstanceSubsystem
 	// +++++++++++++++++++++++ HELPERS +++++++++++++++++++++++
 	/** Tries to find an empty slot in the given array. If none is found, returns -1. */
 	int FindFirstEmptySpace(TArray<FInvItem> array);
+
+	/** Gets the data of a given item from its corresponding data table. */
+	FGenericItem* GetItemData(FInvItem item);
+
+	/** Gets the data table of a given item type. Returns nullptr on failure. */
+	TObjectPtr<UDataTable> GetDTOfItemType(E_itemType type);
+
+	/** Gets the unlocked or equipped array of a given type. Returns nullptr on failure. */
+	TArray<FInvItem>* GetArray(E_itemType type, bool equips);
 };
