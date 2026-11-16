@@ -21,6 +21,18 @@ enum class E_itemType : uint8 {
 	WEAPON			UMETA(DisplayName = "WEAPON")
 };
 
+// AMBER CARD SELECTION
+USTRUCT(BlueprintType)
+struct FAmberCardSelection {
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName row_name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	uint8 value;
+};
+
 // INVENTORY ITEM
 USTRUCT(BlueprintType)
 struct FInvItem {
@@ -56,8 +68,9 @@ struct FGenericItem : public FTableRowBase {
 };
 
 // AMBER
+USTRUCT(BlueprintType)
 struct FAmber : public FGenericItem {
-	// GENERATED_BODY()
+	GENERATED_BODY()
 
 	// Card selection
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -71,29 +84,19 @@ struct FAmber : public FGenericItem {
 };
 
 // COMPANION
+USTRUCT(BlueprintType)
 struct FCompanion : public FGenericItem {
-	// GENERATED_BODY()
+	GENERATED_BODY()
 
 	// Empty for now, but used so changes are easy to make in the future :)
 };
 
 // WEAPON
+USTRUCT(BlueprintType)
 struct FWeapon : public FGenericItem {
-	// GENERATED_BODY()
+	GENERATED_BODY()
 
 	// Card data table
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSoftObjectPtr<UDataTable> card_data_table;
-};
-
-// AMBER CARD SELECTION
-USTRUCT(BlueprintType)
-struct FAmberCardSelection {
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName row_name;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	uint8 value;
 };
