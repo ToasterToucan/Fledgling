@@ -10,5 +10,5 @@ void USaveGameParent::SaveAllData(TArray<UObject*> saveable_objects, bool at_che
 }
 
 void USaveGameParent::LoadDataForRequester(UObject* requester) {
-	//guh!
+	ISaveable::Execute_LoadData(requester, this);
 }
