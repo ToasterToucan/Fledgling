@@ -35,10 +35,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FAmberCardSelection> amber_card_choices;
 
-
+	/*
 	UFUNCTION(BlueprintCallable)
 	void SaveAllData(TArray<UObject*> saveable_objects, bool at_checkpoint);
 
 	UFUNCTION(BlueprintCallable)
 	void LoadDataForRequester(UObject* requester);
+	*/
 };
