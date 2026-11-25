@@ -100,4 +100,7 @@ class FLEDGLING_API UInventorySubsystem : public UGameInstanceSubsystem
 
 	/** Gets the unlocked or equipped array of a given type. Returns nullptr on failure. */
 	TArray<FInvItem>* GetArray(E_itemType type, bool equips);
+
+	/** Swaps the given item out of the array it's in (specified by the bool equipping), swapping it with either an empty slot or a given index. */
+	bool SwapItems(bool equipping, E_itemType type, int move_from_index, bool force = false, int slot_into = 0);
 };

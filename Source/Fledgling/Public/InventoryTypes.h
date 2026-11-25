@@ -45,7 +45,15 @@ struct FInvItem {
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	E_itemType type;
+
+	FInvItem(E_itemType _type = E_itemType::AMBER, FName _name = "Empty");
 };
+
+FInvItem::FInvItem(E_itemType _type, FName _name) {
+	name = _name;
+	type = _type;
+}
+
 
 USTRUCT(BlueprintType)
 struct FGenericItem : public FTableRowBase {

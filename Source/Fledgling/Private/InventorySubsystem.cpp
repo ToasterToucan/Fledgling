@@ -177,41 +177,61 @@ bool UInventorySubsystem::EquipItem_Item(FInvItem item, bool force_equip, int eq
 }
 
 bool UInventorySubsystem::EquipItem_Index(E_itemType type, int index, bool force_equip, int equip_slot) {
-	// Slot in the equips array we're going to equip into
-	int equip_to = equip_slot;
-
-	// Equip array of this item type, for easy use
-	TArray<FInvItem> equip_array = *GetArray(type, true);
-
-	// If not force equipping, try to find an empty slot to equip into.
-	if (!force_equip) {
-		int empty_slot = FindFirstEmptySpace(equip_array);
-		if (empty_slot <= -1) { return false; }
-		equip_to = empty_slot;
-	}
-
-	// Unlocks array of this item type, for easy use
-	TArray<FInvItem> unlocks_array = *GetArray(type, false);
-
-	// Swapsie!
-	FInvItem temp = equip_array[equip_to];
-	equip_array[equip_to] = unlocks_array[index];
-	unlocks_array[index] = temp;
-
-	// Update player tags
-	APlayerParent* player = Cast<APlayerParent>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	FItemG
-	player->player_tags_cpp.AddTag
-
-	return true;
+	// Swap item!
+	return SwapItems(true, type, index, force_equip, equip_slot);
 }
 
 void UInventorySubsystem::UnequipItem_Item(FInvItem item) {
-	// pass
+	// Find this item in the equipped array. If its not there, fail out.
+	int item_loc = GetArray(item.type, true)->Find(item);
+	if (item_loc == INDEX_NONE) { return; }
+
+	UnequipItem_Index(item.type, item_loc);
 }
 
 void UInventorySubsystem::UnequipItem_Index(E_itemType type, int index) {
-	// pass
+	// Try to unequip the index - upon failure, add a new entry to the unlocks array for the item to be unequipped into, then try again.
+	if (!SwapItems(false, type, index)) {
+		GetArray(type, false)->Add(FInvItem(type));
+		SwapItems(false, type, index);
+	}
+}
+
+bool UInventorySubsystem::SwapItems(bool equipping, E_itemType type, int move_from_index, bool force, int slot_into) {
+	// Slot in the equips array we're going to equip into
+	int move_to_index = slot_into;
+
+	// Array we're moving the given item into
+	TArray<FInvItem> move_to_array = *GetArray(type, equipping);
+
+	// If not force equip/unequipping, try to find an empty slot to equip into.
+	if (!force) {
+		int empty_slot = FindFirstEmptySpace(move_to_array);
+		if (empty_slot <= -1) { return false; }
+		move_to_index = empty_slot;
+	}
+
+	// Array we're moving the given item out of
+	TArray<FInvItem> move_from_array = *GetArray(type, !equipping);
+
+	// Swapsie!
+	FInvItem temp = move_to_array[move_to_index];
+	move_to_array[move_to_index] = move_from_array[move_from_index];
+	move_from_array[move_from_index] = temp;
+
+	// Grab data for player tag updating
+	APlayerParent* player = Cast<APlayerParent>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	FGenericItem item_info = *GetDTOfItemType(type)->FindRow<FGenericItem>(move_to_array[move_to_index].name, "EquipItem_Index get equip tag");
+
+	// Update the tags
+	if (equipping) {
+		player->player_tags_cpp.AddTag(item_info.equip_tag);
+	}
+	else {
+		player->player_tags_cpp.RemoveTag(item_info.equip_tag);
+	}
+
+	return true;
 }
 
 // +++++++++++++++++++++++ OPEN/CLOSE +++++++++++++++++++++++
@@ -234,7 +254,7 @@ int UInventorySubsystem::FindFirstEmptySpace(TArray<FInvItem> array) {
 }
 
 FGenericItem* UInventorySubsystem::GetItemData(FInvItem item) {
-	return GetDTOfItemType(item.type)->FindRow<FGenericItem>(item.name, "guh");
+	return GetDTOfItemType(item.type)->FindRow<FGenericItem>(item.name, "GetItemData");
 }
 
 TObjectPtr<UDataTable> UInventorySubsystem::GetDTOfItemType(E_itemType type) {
