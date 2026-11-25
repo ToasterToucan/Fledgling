@@ -17,7 +17,7 @@ public:
 UENUM(BlueprintType)
 enum class E_itemType : uint8 {
 	AMBER			UMETA(DisplayName = "AMBER"),
-	COMPANION		UMETA(DisplayName = "Companion"),
+	COMPANION		UMETA(DisplayName = "COMPANION"),
 	WEAPON			UMETA(DisplayName = "WEAPON")
 };
 

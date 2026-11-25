@@ -68,7 +68,7 @@ class FLEDGLING_API UInventorySubsystem : public UGameInstanceSubsystem
 
 	/** Equips an item that is ALREADY UNLOCKED to the player, by it's index in the unlocks array. If force_equip is false, fails out if there is no empty slot available. If force_equip is true, equips into equip_slot, which is 0 by default. */
 	UFUNCTION(BlueprintCallable, Category = "Item Manip")
-	bool EquipItem_Index(int index, bool force_equip = false, int equip_slot = 0);
+	bool EquipItem_Index(E_itemType type, int index, bool force_equip = false, int equip_slot = 0);
 
 	/** Unequips an item that is CURRENTLY EQUIPPED to the player, by the item itself. */
 	UFUNCTION(BlueprintCallable, Category = "Item Manip")
@@ -76,7 +76,7 @@ class FLEDGLING_API UInventorySubsystem : public UGameInstanceSubsystem
 
 	/** Unequips an item that is CURRENTLY EQUIPPED to the player, by its index in the equipped array. */
 	UFUNCTION(BlueprintCallable, Category = "Item Manip")
-	void UnequipItem_Index(int index);
+	void UnequipItem_Index(E_itemType type, int index);
 
 	// +++++++++++++++++++++++ OPEN/CLOSE +++++++++++++++++++++++
 	/** Opens the Inventory. */
@@ -87,6 +87,7 @@ class FLEDGLING_API UInventorySubsystem : public UGameInstanceSubsystem
 	UFUNCTION(BlueprintCallable, Category = "Open/Close")
 	void CloseInventory();
 
+	private:
 	// +++++++++++++++++++++++ HELPERS +++++++++++++++++++++++
 	/** Tries to find an empty slot in the given array. If none is found, returns -1. */
 	int FindFirstEmptySpace(TArray<FInvItem> array);
