@@ -46,13 +46,12 @@ struct FInvItem {
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	E_itemType type;
 
-	FInvItem(E_itemType _type = E_itemType::AMBER, FName _name = "Empty");
-};
+	// FInvItem(E_itemType _type = E_itemType::AMBER, FName _name = "Empty");
 
-FInvItem::FInvItem(E_itemType _type, FName _name) {
-	name = _name;
-	type = _type;
-}
+	FORCEINLINE bool operator==(const FInvItem& other) const {
+		return name == other.name && type == other.type;
+	}
+};
 
 
 USTRUCT(BlueprintType)

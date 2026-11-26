@@ -2,41 +2,31 @@
 #include "PlayerParent.h"
 #include "Kismet/GameplayStatics.h"
 
-// +++++++++++++++++++++++ VARIABLES +++++++++++++++++++++++
-// The card choices the player has made for each amber.
-TArray<FAmberCardSelection> amber_card_choices;
-
-// The player's currently equipped items.
-TArray<FInvItem> equipped_ambers;
-TArray<FInvItem> equipped_companions;
-TArray<FInvItem> equipped_weapon;		// Stored in an array for consistency's sake. Also allows for future double weapon allowances!
-
-// The player's unlocked items. EXCLUDES equipped items.
-TArray<FInvItem> unlocked_ambers;
-TArray<FInvItem> unlocked_companions;
-TArray<FInvItem> unlocked_weapons;
-
-
-// Data tables! For looking up item info.
-UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(RowType="FAmber"))
-TObjectPtr<UDataTable> DT_ambers;
-
-UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (RowType = "FCompanion"))
-TObjectPtr<UDataTable> DT_companions;
-
-UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (RowType = "FWeapon"))
-TObjectPtr<UDataTable> DT_weapons;
-
 
 // +++++++++++++++++++++++ SAVE/LOAD +++++++++++++++++++++++
-/** Save all inventory data to file and instance. */
-void UInventorySubsystem::SaveInventory() {
-	// body
+
+void UInventorySubsystem::SaveInventory(USaveGameParent* save_ref) {
+	save_ref->equipped_ambers = equipped_ambers;
+	save_ref->equipped_companions = equipped_companions;
+	save_ref->equipped_weapon = equipped_weapon;
+
+	save_ref->unlocked_ambers = unlocked_ambers;
+	save_ref->unlocked_companions = unlocked_companions;
+	save_ref->unlocked_weapons = unlocked_weapons;
+
+	save_ref->amber_card_choices = amber_card_choices;
 }
 
-/** Load all inventory data from file. **The inventory will never load from the instance. */
-void UInventorySubsystem::LoadInventory() {
-	// body
+void UInventorySubsystem::LoadInventory(USaveGameParent* save_ref) {
+	equipped_ambers = save_ref->equipped_ambers;
+	equipped_companions = save_ref->equipped_companions;
+	equipped_weapon = save_ref->equipped_weapon;
+
+	unlocked_ambers = save_ref->unlocked_ambers;
+	unlocked_companions = save_ref->unlocked_companions;
+	unlocked_weapons = save_ref->unlocked_weapons;
+
+	amber_card_choices = save_ref->amber_card_choices;
 }
 
 
@@ -192,7 +182,7 @@ void UInventorySubsystem::UnequipItem_Item(FInvItem item) {
 void UInventorySubsystem::UnequipItem_Index(E_itemType type, int index) {
 	// Try to unequip the index - upon failure, add a new entry to the unlocks array for the item to be unequipped into, then try again.
 	if (!SwapItems(false, type, index)) {
-		GetArray(type, false)->Add(FInvItem(type));
+		GetArray(type, false)->Add(FInvItem("Empty", type));
 		SwapItems(false, type, index);
 	}
 }
@@ -237,11 +227,28 @@ bool UInventorySubsystem::SwapItems(bool equipping, E_itemType type, int move_fr
 // +++++++++++++++++++++++ OPEN/CLOSE +++++++++++++++++++++++
 
 void UInventorySubsystem::OpenInventory() {
-	// pass
+	// If the inventory widget doesn't yet exist, try to create one.
+	if (!inv_widget) {
+		// If we don't have the inventory widget type, try to get it.
+		if (!inv_widget_type) {
+			static ConstructorHelpers::FClassFinder<UUserWidget> inventoryWidgetClassFound(TEXT("WidgetBlueprint'/Game/FirstPerson/Blueprints/UI/InventoryUI_BP.InventoryUI_BP_C'"));
+			if (inventoryWidgetClassFound.Class != nullptr) {
+				inv_widget_type = inventoryWidgetClassFound.Class;
+			}
+			else {
+				return;
+			}
+		}
+		
+		inv_widget = CreateWidget<UUserWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 0), inv_widget_type);
+		inv_widget->AddToViewport(1);
+	}
+
+	inv_widget->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UInventorySubsystem::CloseInventory() {
-	// pass
+	inv_widget->SetVisibility(ESlateVisibility::Hidden);
 }
 
 // +++++++++++++++++++++++ HELPERS +++++++++++++++++++++++

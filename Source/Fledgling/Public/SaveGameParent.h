@@ -13,23 +13,23 @@ class FLEDGLING_API USaveGameParent : public USaveGame
 public:
 	// Unlocked Inventory Items
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<FAmber> unlocked_ambers;
+	TArray<FInvItem> unlocked_ambers;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<FCompanion> unlocked_companions;
+	TArray<FInvItem> unlocked_companions;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<FWeapon> unlocked_weapons;
+	TArray<FInvItem> unlocked_weapons;
 
 	// Equipped Inventory Items
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<FWeapon> equipped_ambers;
+	TArray<FInvItem> equipped_ambers;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<FCompanion> equipped_companions;
+	TArray<FInvItem> equipped_companions;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<FWeapon> equipped_weapon;
+	TArray<FInvItem> equipped_weapon;
 
 	// Amber Card Choices
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

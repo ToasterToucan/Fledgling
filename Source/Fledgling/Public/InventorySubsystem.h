@@ -4,21 +4,57 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "InventoryTypes.h"
 #include "CombatTypes.h"
+#include "SaveGameParent.h"
+#include "Blueprint/UserWidget.h"
 #include "InventorySubsystem.generated.h"
 
 UCLASS()
 class FLEDGLING_API UInventorySubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
+	public:
+	// +++++++++++++++++++++++ VARIABLES +++++++++++++++++++++++
+	// The card choices the player has made for each amber.
+	TArray<FAmberCardSelection> amber_card_choices;
+
+	// The player's currently equipped items.
+	TArray<FInvItem> equipped_ambers;
+	TArray<FInvItem> equipped_companions;
+	TArray<FInvItem> equipped_weapon;		// Stored in an array for consistency's sake. Also allows for future double weapon allowances!
+
+	// The player's unlocked items. EXCLUDES equipped items.
+	TArray<FInvItem> unlocked_ambers;
+	TArray<FInvItem> unlocked_companions;
+	TArray<FInvItem> unlocked_weapons;
+
+
+	// Data tables! For looking up item info.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (RowType = "FAmber"))
+	TObjectPtr<UDataTable> DT_ambers;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (RowType = "FCompanion"))
+	TObjectPtr<UDataTable> DT_companions;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (RowType = "FWeapon"))
+	TObjectPtr<UDataTable> DT_weapons;
+
+
+	// please work
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<UUserWidget> inv_widget_type;
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> inv_widget;
+
 
 	// +++++++++++++++++++++++ SAVE/LOAD +++++++++++++++++++++++
 	/** Save all inventory data to file and instance. */
 	UFUNCTION(BlueprintCallable, Category = "Save/Load")
-	void SaveInventory();
+	void SaveInventory(USaveGameParent* save_ref);
 
 	/** Load all inventory data from file. **The inventory will never load from the instance. */
 	UFUNCTION(BlueprintCallable, Category = "Save/Load")
-	void LoadInventory();
+	void LoadInventory(USaveGameParent* save_ref);
 
 
 	// +++++++++++++++++++++++ AMBER CARD CHOICE +++++++++++++++++++++++
